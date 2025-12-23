@@ -9,6 +9,7 @@ allowed-tools: Read, Write, Edit, Bash, Glob
 詳細は以下を参照:
 - [reference.md](reference.md) - テンプレート詳細、レイアウト情報
 - [code-patterns.md](code-patterns.md) - python-pptxコードパターン
+- [components.md](components.md) - 再利用可能なコンポーネント
 
 ---
 
@@ -64,6 +65,63 @@ MSO_SHAPE.ROUNDED_RECTANGLE
 
 ---
 
+## カラーパレットテンプレート
+
+プロジェクト開始時にカラークラスを定義する:
+
+```python
+from pptx.dml.color import RGBColor
+
+class ProjectColors:
+    """プロジェクト固有のカラーパレット"""
+    # メインカラー
+    PRIMARY = RGBColor(0x00, 0x55, 0xFF)       # ブランドカラー
+    PRIMARY_DARK = RGBColor(0x00, 0x3D, 0xB3)  # 濃いバージョン
+    PRIMARY_LIGHT = RGBColor(0x66, 0x99, 0xFF) # 薄いバージョン
+
+    # アクセント（1色のみ）
+    ACCENT = RGBColor(0x00, 0x96, 0x88)        # ティール
+
+    # テキスト
+    TEXT_DARK = RGBColor(0x33, 0x33, 0x33)     # 本文
+    TEXT_LIGHT = RGBColor(0x75, 0x75, 0x75)    # 補足
+
+    # 背景・ボーダー
+    BG_LIGHT = RGBColor(0xFA, 0xFA, 0xFA)      # 薄い背景
+    BORDER = RGBColor(0xE0, 0xE0, 0xE0)        # ボーダー
+    WHITE = RGBColor(0xFF, 0xFF, 0xFF)
+
+    # 警告（必要な場合のみ）
+    ALERT = RGBColor(0xE5, 0x39, 0x35)         # 赤
+```
+
+---
+
+## コンポーネント一覧
+
+### 基本コンポーネント
+
+| コンポーネント | 用途 | 詳細 |
+|---------------|------|------|
+| `add_content_slide()` | スライド基本構造 | ヘッダー + タイトル + ページ番号 |
+| `add_key_message_box()` | キーメッセージ | 強調ボックス |
+| `add_info_card()` | KPIカード | 数値表示 |
+| `add_bullet_list()` | 箇条書き | リスト表示 |
+| `add_table()` | テーブル | データ表示 |
+
+### 拡張コンポーネント
+
+| コンポーネント | 用途 | 詳細 |
+|---------------|------|------|
+| `add_kpi_row()` | KPIカード横並び | 2-4列対応 |
+| `add_rank_card()` | ランクカード | バッジ付き |
+| `add_timeline()` | タイムライン | フェーズ表示 |
+| `add_comparison_columns()` | 2カラム比較 | Before/After |
+
+詳細コードは [components.md](components.md) を参照。
+
+---
+
 ## チェックリスト
 
 - [ ] 全オブジェクトが編集可能
@@ -71,6 +129,7 @@ MSO_SHAPE.ROUNDED_RECTANGLE
 - [ ] フォント: Noto Sans JP (日本語) / Montserrat (英語)
 - [ ] カラー: 3色以内
 - [ ] スライドマスターが適切に選択されている
+- [ ] グリッド整列（同列要素のズレなし）
 
 ---
 
@@ -93,6 +152,7 @@ Task tool:
 from pptx import Presentation
 from pptx.util import Inches, Pt
 from pptx.enum.shapes import MSO_SHAPE
+from pptx.enum.text import PP_ALIGN
 from pptx.dml.color import RGBColor  # ※RgbColorではない
 ```
 
@@ -118,5 +178,5 @@ shape.line.fill.background()  # 枠線なし
 ## 更新履歴
 | 日付 | 内容 |
 |------|------|
-| 2024-12-23 | Skill簡潔化、詳細をreference.md/code-patterns.mdに分離 |
-| 2024-12-23 | NTTDテンプレート情報追加、角丸四角形禁止ルール追加 |
+| 2024-12-24 | v2.0.0: カラーパレットテンプレート追加、コンポーネント一覧追加 |
+| 2024-12-23 | v1.0.0: Skill簡潔化、詳細をreference.md/code-patterns.mdに分離 |
